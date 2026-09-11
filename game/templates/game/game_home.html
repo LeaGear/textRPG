@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Text RPG Clicker</title>
+</head>
+<body>
+    <div style="font-family: Arial, sans-serif; margin: 40px;">
+        <h1>Текстовая RPG</h1>
+
+        {% if character %}
+            <div style="border: 1px solid #ccc; padding: 20px; width: 300px; border-radius: 8px;">
+                <h3>{{ character.name }}</h3>
+                <p><strong>Уровень:</strong> {{ character.level }}</p>
+                <p><strong>Опыт:</strong> {{ character.exp }}</p>
+                <p><strong>Здоровье:</strong> {{ character.hp }} / {{ character.max_hp }}</p>
+                <p><strong>Урон:</strong> {{ character.damage }}</p>
+                <p><strong>Золото:</strong> {{ character.gold }} 🪙</p>
+            </div>
+        {% else %}
+            <p>Персонаж не найден. Создай его в панели администратора!</p>
+        {% endif %}
+    </div>
+</body>
+</html>

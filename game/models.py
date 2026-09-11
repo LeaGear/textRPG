@@ -1,3 +1,27 @@
 from django.db import models
 
 # Create your models here.
+
+class Character(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Character Name', unique=True)
+    level = models.IntegerField(default=1, verbose_name='Character Level')
+    exp = models.IntegerField(default=0, verbose_name='Character EXP')
+    hp = models.IntegerField(default=100, verbose_name='Character Current HP')
+    max_hp = models.IntegerField(default=100, verbose_name='Character Max HP')
+    damage = models.FloatField(default=10.0, verbose_name='Character Damage')
+    gold = models.IntegerField(default=0, verbose_name='Character Gold')
+
+    def __str__(self):
+        return self.name
+
+
+class Enemy(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Enemy Name')
+    hp = models.IntegerField(default=30, verbose_name='Enemy Current HP')
+    max_hp = models.IntegerField(default=30, verbose_name="Enemy MAX HP")
+    damage = models.FloatField(default=5.0, verbose_name='Enemy Damage')
+    reward_exp = models.IntegerField(default=5, verbose_name='Enemy Reward EXP')
+    reward_gold = models.IntegerField(default=10, verbose_name='Enemy Reward Gold')
+
+    def __str__(self):
+        return f'{self.name} (HP: {self.hp})'
