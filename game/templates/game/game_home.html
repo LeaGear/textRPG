@@ -8,18 +8,43 @@
     <div style="font-family: Arial, sans-serif; margin: 40px;">
         <h1>Текстовая RPG</h1>
 
-        {% if character %}
-            <div style="border: 1px solid #ccc; padding: 20px; width: 300px; border-radius: 8px;">
-                <h3>{{ character.name }}</h3>
-                <p><strong>Уровень:</strong> {{ character.level }}</p>
-                <p><strong>Опыт:</strong> {{ character.exp }}</p>
-                <p><strong>Здоровье:</strong> {{ character.hp }} / {{ character.max_hp }}</p>
-                <p><strong>Урон:</strong> {{ character.damage }}</p>
-                <p><strong>Золото:</strong> {{ character.gold }} 🪙</p>
-            </div>
-        {% else %}
-            <p>Персонаж не найден. Создай его в панели администратора!</p>
-        {% endif %}
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+
+            {% if character %}
+                <div style="border: 1px solid #ccc; padding: 20px; width: 300px; border-radius: 8px;">
+                    <h2>Ваш Герой</h2>
+                    <h3>{{ character.name }}</h3>
+                    <p><strong>Уровень:</strong> {{ character.level }}</p>
+                    <p><strong>Опыт:</strong> {{ character.exp }}</p>
+                    <p><strong>Здоровье:</strong> {{ character.hp }} / {{ character.max_hp }}</p>
+                    <p><strong>Урон:</strong> {{ character.damage }}</p>
+                    <p><strong>Золото:</strong> {{ character.gold }} 🪙</p>
+                </div>
+            {% else %}
+                <p>Персонаж не найден. Создай его в панели администратора!</p>
+            {% endif %}
+
+            {% if enemy %}
+                <div style ="border:1px solid #ccc; padding: 20px; width: 300px; border-radius:8px;">
+                    <h2>Ваш Враг</h2>
+                    <h3>{{enemy.name}}</h3>
+                    <p><strong>Здоровье:</strong> {{character.enemy_hp}}</p>
+                    <p><strong>Урон:</strong> {{enemy.damage}}</p>
+                    <p><strong>Награда опыта:</strong> {{enemy.reward_exp}}</p>
+                    <p><strong>Награда золото:</strong> {{enemy.reward_gold}}</p>
+                </div>
+            {% else %}
+                <p>Врага нет</p>
+            {% endif %}
+        </div>
+        <div style='margin-top: 20px;'>
+            <form form action="{% url 'attack_action' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" style="padding:10px, 20px; font-size: 16px;background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Ударить врага!
+                </button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

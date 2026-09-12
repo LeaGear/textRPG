@@ -11,6 +11,9 @@ class Character(models.Model):
     damage = models.FloatField(default=10.0, verbose_name='Character Damage')
     gold = models.IntegerField(default=0, verbose_name='Character Gold')
 
+    enemy_name = models.CharField(default ='Zombie', max_length=100, verbose_name='Name of Current Enemy')
+    enemy_hp = models.IntegerField(default=5, verbose_name='Current Enemy HP')
+
     def __str__(self):
         return self.name
 
