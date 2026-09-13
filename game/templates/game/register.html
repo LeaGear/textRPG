@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация в RPG Clicker</title>
+</head>
+<body>
+    <div style="margin: 50px auto; width: 300px; font-family: Arial, sans-serif;">
+        <h2>Регистрация</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" style="padding: 8px 16px; background-color: #4ade80; border: none; cursor: pointer; border-radius: 4px;">
+                Зарегистрироваться
+            </button>
+        </form>
+        <p style="margin-top: 15px;"><a href="{% url 'game_home' %}">На главную</a></p>
+    </div>
+</body>
+</html>

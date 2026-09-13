@@ -13,12 +13,24 @@
         <div class="spacer">LOG IN</div>
         <header class="header">NAME</header>
         <div class="auth-panel">
-            <form action="" method="POST">
-                {% csrf_token %}
-                <button type="submit" style="cursor: pointer;">
-                    LOG IN
-                </button>
-            </form>
+            {% if request.user.is_authenticated %}
+                <span>👤 {{ request.user.username }}</span>
+                <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" style="cursor: pointer;">
+                        LOG OUT
+                    </button>
+                </form>
+            {% else %}
+                <div style="">
+                    <a href="{% url 'login' %}">
+                    <button type="button">LOG IN</button>
+                    </a>
+                     <a href="{% url 'register' %}">
+                    <button type="button">REGISTER</button>
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 
@@ -73,6 +85,11 @@
                         Ударить врага!
                     </button>
                 </form>
+            </div>
+        </section>
+        <section class="chat-panel">
+            <div>
+                CHAT
             </div>
         </section>
     </div>

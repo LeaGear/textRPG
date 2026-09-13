@@ -1,8 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Character(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+
     name = models.CharField(max_length=100, verbose_name='Character Name', unique=True)
     level = models.IntegerField(default=1, verbose_name='Character Level')
     exp = models.IntegerField(default=0, verbose_name='Character EXP')
@@ -38,3 +42,19 @@ class Enemy(models.Model):
 
     def __str__(self):
         return f'{self.name} (HP: {self.hp})'
+
+class Item(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Item Name')
+    cost = models.IntegerField(default=100, verbose_name='Item Cost')
+    stat_up = models.CharField(max_length=100, verbose_name='Item Stat Up')
+
+    def __str__(self):
+        return f'{self.name} (Cost: {self.cost}) - UP: {self.stat_up}'
+
+class Inventory(models.Model):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, verbose_name='Item Owner')
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, verbose_name='Item Name')
+    purchased_at = models.DateTimeField(auto_now_add=True, verbose_name='Purchased at')
+
+    def __str__(self):
+        return f'{self.character.name} owned {self.item}'

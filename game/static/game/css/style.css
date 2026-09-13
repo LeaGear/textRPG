@@ -18,7 +18,7 @@ body {
     display: grid;
     grid-template-areas:
         "char enemy shop"
-        "stats combat shop";
+        "stats combat chat";
     grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: 2fr 1fr;
     gap: 16px;
@@ -31,9 +31,10 @@ body {
 .shop-panel {grid-area: shop;}
 .stats-panel {grid-area: stats;}
 .combat-panel {grid-area: combat;}
+.chat-panel {grid-area: chat;}
 
 .header, .auth-panel, .character-panel, .enemy-panel, .shop-panel,
-.stats-panel, .combat-panel {
+.stats-panel, .combat-panel, .chat-panel {
     border: 2px solid #4ade80;
     padding: 12px;
     text-align: center;
