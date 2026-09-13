@@ -1,0 +1,40 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+.page-head{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 5px 20px;
+}
+.spacer{
+    visibility: hidden;
+}
+.game-layout {
+    flex: 1;
+    display: grid;
+    grid-template-areas:
+        "char enemy shop"
+        "stats combat shop";
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 2fr 1fr;
+    gap: 16px;
+    padding: 50px 100px;
+    align-content: center;
+}
+
+.character-panel {grid-area: char;}
+.enemy-panel {grid-area: enemy;}
+.shop-panel {grid-area: shop;}
+.stats-panel {grid-area: stats;}
+.combat-panel {grid-area: combat;}
+
+.header, .auth-panel, .character-panel, .enemy-panel, .shop-panel,
+.stats-panel, .combat-panel {
+    border: 2px solid #4ade80;
+    padding: 12px;
+    text-align: center;
+}

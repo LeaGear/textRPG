@@ -17,6 +17,16 @@ class Character(models.Model):
     def __str__(self):
         return self.name
 
+    def add_exp(self, amount):
+        self.exp += amount
+        while self.exp >= self.level * 100:
+            self.exp -= self.level * 100
+            self.level += 1
+            self.max_hp += self.max_hp * 0.1
+            self.hp = self.max_hp
+
+    def add_gold(self, amount):
+        self.gold += amount
 
 class Enemy(models.Model):
     name = models.CharField(max_length=100, verbose_name='Enemy Name')

@@ -1,30 +1,30 @@
-import random
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 
 from game.models import Character, Enemy
+from game.services import get_new_enemy
+
 # Create your views here.
 
 def game_home(view_request):
     character = Character.objects.filter(id=1).first()
-    if not character.enemy_name:
-        get_new_enemy(character)
+    if character:
+        enemy_name = character.enemy_name
+        enemy = Enemy.objects.filter(name=enemy_name).first()
+    else:
+        enemy = Enemy.objects.first()
 
-    enemy_name = character.enemy_name
-
-    enemy = Enemy.objects.filter(name=enemy_name).first()
     context = {
         'character' : character,
         'enemy': enemy
     }
-    return render(view_request, 'game/game_home.html', context)
+    return render(view_request, 'game/main_screen.html', context)
 
 def attack_action(view_request):
     if view_request.method == 'POST':
         character = Character.objects.filter(id=1).first()
-
         if character and character.enemy_name:
             enemy = Enemy.objects.filter(name=character.enemy_name).first()
 
@@ -32,21 +32,13 @@ def attack_action(view_request):
                 character.enemy_hp -= character.damage
 
                 if character.enemy_hp <= 0:
-                    character.exp += enemy.reward_exp
-                    character.gold += enemy.reward_gold
-                    get_new_enemy(character)
+                    character.add_exp(enemy.reward_exp)
+                    character.add_gold(enemy.reward_gold)
+                    all_enemies = list(Enemy.objects.all())
+                    get_new_enemy(character, all_enemies)
 
                 character.save()
 
     return redirect('game_home')
 
 
-def get_new_enemy(character):
-    all_enemies = list(Enemy.objects.all())
-    print(all_enemies)
-    if all_enemies:
-        random_enemy = random.choice(all_enemies)
-        print(f"Now random -> {random_enemy}")
-        character.enemy_name = random_enemy.name
-        character.enemy_hp = random_enemy.hp * character.level
-        character.save()

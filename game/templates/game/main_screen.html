@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RPG Clicker</title>
+    <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
+</head>
+
+<body>
+    <div class="page-head">
+        <div class="spacer">LOG IN</div>
+        <header class="header">NAME</header>
+        <div class="auth-panel">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <button type="submit" style="cursor: pointer;">
+                    LOG IN
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="game-layout">
+        <section class="character-panel">
+            {% if character %}
+                <div>
+                    <h2>Ваш Герой</h2>
+                    <h3>{{ character.name }}</h3>
+                </div>
+            {% else %}
+                <p>Персонаж не найден. Создай его в панели администратора!</p>
+            {% endif %}
+        </section>
+        <section class="enemy-panel">
+            {% if enemy %}
+                <div>
+                    <h2>Ваш Враг</h2>
+                    <h3>{{enemy.name}}</h3>
+                    <p><strong>Здоровье:</strong> {{character.enemy_hp}}</p>
+                    <p><strong>Урон:</strong> {{enemy.damage}}</p>
+                    <p><strong>Награда опыта:</strong> {{enemy.reward_exp}}</p>
+                    <p><strong>Награда золото:</strong> {{enemy.reward_gold}}</p>
+                </div>
+            {% else %}
+                <p>Врага нет</p>
+            {% endif %}
+        </section>
+        <aside class="shop-panel">
+            Store menu
+
+        </aside>
+
+        <section class="stats-panel">
+            {% if character %}
+                <div>
+                    <p><strong>Уровень:</strong> {{ character.level }}</p>
+                    <p><strong>Опыт:</strong> {{ character.exp }}</p>
+                    <p><strong>Здоровье:</strong> {{ character.hp }} / {{ character.max_hp }}</p>
+                    <p><strong>Урон:</strong> {{ character.damage }}</p>
+                    <p><strong>Золото:</strong> {{ character.gold }} 🪙</p>
+                </div>
+            {% else %}
+                <p>Персонаж не найден. Создай его в панели администратора!</p>
+            {% endif %}
+        </section>
+        <section class="combat-panel">Combat/ability/HP
+            <div style='margin-top: 20px;'>
+                <form action="{% url 'attack_action' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" style="padding:10px, 20px; font-size: 16px;background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Ударить врага!
+                    </button>
+                </form>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
