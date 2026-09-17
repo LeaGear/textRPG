@@ -1,13 +1,14 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 
-from game.models import Character, Enemy
-from game.services import get_new_enemy
+from game.models import Character, Enemy, ShopOffer, Inventory
+from game.services import get_new_enemy, refresh_char_store_offer, buy_item_from_store, attack_action, get_user_character
 
 # Create your views here.
 def register_view(request):
@@ -38,6 +39,7 @@ def login_view(request):
     context = {"form" : form}
     return render(request, "game/login.html", context)
 
+@login_required
 def logout_view(request):
     if request.method == "POST":
         auth_logout(request)
@@ -45,37 +47,53 @@ def logout_view(request):
 
 def game_home(view_request):
     character = None
+    shop_offer = []
+    char_inventory = []
+
     if view_request.user.is_authenticated:
-        character = Character.objects.filter(user=view_request.user).first()
+        character = get_user_character(view_request.user)
     if character:
         enemy_name = character.enemy_name
         enemy = Enemy.objects.filter(name=enemy_name).first()
+        shop_offer = list(ShopOffer.objects.filter(character=character))
+        char_inventory = list(Inventory.objects.filter(character=character))
+
     else:
         enemy = Enemy.objects.first()
 
+
+
     context = {
         'character' : character,
-        'enemy': enemy
+        'enemy': enemy,
+        'offers': shop_offer,
+        'inventory': char_inventory
     }
     return render(view_request, 'game/main_screen.html', context)
 
-def attack_action(view_request):
+@login_required
+def refresh_store(request):
+    if request.method == 'POST':
+        character = get_user_character(request.user)
+        if character:
+            refresh_char_store_offer(character)
+    return redirect('game_home')
+
+@login_required
+def buy_item_view(request):
+    if request.method == 'POST':
+        offer_id = request.POST.get('offer_id')
+        buy_item_from_store(offer_id)
+    return redirect('game_home')
+
+@login_required
+def attack_action_view(view_request):
     if view_request.method == 'POST':
-        character = Character.objects.filter(user=view_request.user).first()
+        character = get_user_character(view_request.user)
         if character and character.enemy_name:
             enemy = Enemy.objects.filter(name=character.enemy_name).first()
-
             if enemy:
-                character.enemy_hp -= character.damage
-
-                if character.enemy_hp <= 0:
-                    character.add_exp(enemy.reward_exp)
-                    character.add_gold(enemy.reward_gold)
-                    all_enemies = list(Enemy.objects.all())
-                    get_new_enemy(character, all_enemies)
-
-                character.save()
-
+                attack_action(character, enemy)
     return redirect('game_home')
 
 

@@ -17,12 +17,12 @@
                 <span>👤 {{ request.user.username }}</span>
                 <form action="{% url 'logout' %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit" style="cursor: pointer;">
+                    <button type="submit" class="btn">
                         LOG OUT
                     </button>
                 </form>
             {% else %}
-                <div style="">
+                <div>
                     <a href="{% url 'login' %}">
                     <button type="button">LOG IN</button>
                     </a>
@@ -41,6 +41,20 @@
                     <h2>Ваш Герой</h2>
                     <h3>{{ character.name }}</h3>
                 </div>
+                {% if inventory %}
+                    <div>
+                        <ul class="list-style">
+                            {% for char_item in inventory %}
+                                <li class="list-item-style">
+                                    <div><strong>{{char_item.item.name}}</strong></div>
+                                    <div>UPGRADE: {{char_item.item.stat_up}}</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <p>Inventory is empty!</p>
+                {% endif %}
             {% else %}
                 <p>Персонаж не найден. Создай его в панели администратора!</p>
             {% endif %}
@@ -60,15 +74,42 @@
             {% endif %}
         </section>
         <aside class="shop-panel">
-            Store menu
-
+            <p>Store menu</p>
+            <div class="shop-refresh-container">
+                <form action="{% url 'refresh_store' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">
+                        🔄 {{character.store_refresh_cost}} gold
+                    </button>
+                </form>
+            </div>
+            {% if offers %}
+                <ul class="list-style">
+                    {% for offer in offers %}
+                    <li class="list-item-style">
+                        <div><strong>{{offer.item.name}}</strong></div>
+                        <div>Price: {{offer.item.cost}}</div>
+                        <div>Bonus: {{offer.item.stat_up}}</div>
+                        <form action="{% url 'buy_item' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="offer_id" value="{{offer.id}}">
+                            <button type="submit" class="btn">
+                                BUY
+                            </button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>STORE IS EMPTY!</p>
+            {% endif %}
         </aside>
 
         <section class="stats-panel">
             {% if character %}
                 <div>
                     <p><strong>Уровень:</strong> {{ character.level }}</p>
-                    <p><strong>Опыт:</strong> {{ character.exp }}</p>
+                    <p><strong>Опыт:</strong> {{ character.exp }} / {{character.exp_to_new_level}}</p>
                     <p><strong>Здоровье:</strong> {{ character.hp }} / {{ character.max_hp }}</p>
                     <p><strong>Урон:</strong> {{ character.damage }}</p>
                     <p><strong>Золото:</strong> {{ character.gold }} 🪙</p>
@@ -81,7 +122,7 @@
             <div style='margin-top: 20px;'>
                 <form action="{% url 'attack_action' %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit" style="padding:10px, 20px; font-size: 16px;background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <button type="submit" class="btn">
                         Ударить врага!
                     </button>
                 </form>

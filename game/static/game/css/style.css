@@ -4,15 +4,39 @@ body {
     min-height: 100vh;
     margin: 0;
 }
-.page-head{
+.page-head {
     display: flex;
     justify-content: space-between;
     gap: 20px;
     padding: 5px 20px;
 }
-.spacer{
+.spacer {
     visibility: hidden;
 }
+.btn {
+    cursor: pointer;
+    background-color: #4ade80;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+.shop-refresh-container {
+    display:flex;
+    justify-content: end;
+}
+.list-style {
+    list-style: None;
+    padding: 0;
+    overflow-y:auto;
+    height: 300px;
+}
+.list-item-style {
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #4ade80;
+    padding-bottom:8px;
+}
+
+
 .game-layout {
     flex: 1;
     display: grid;
