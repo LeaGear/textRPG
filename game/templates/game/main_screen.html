@@ -47,7 +47,14 @@
                             {% for char_item in inventory %}
                                 <li class="list-item-style">
                                     <div><strong>{{char_item.item.name}}</strong></div>
-                                    <div>UPGRADE: {{char_item.item.stat_up}}</div>
+                                    <div>UPGRADE: {{char_item.item.stat_display}}</div>
+                                    <form action="{% url 'sell_item' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="inventory_record_id" value="{{char_item.id}}">
+                                        <button type="submit" class="btn">
+                                            Sell
+                                        </button>
+                                    </form>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -89,7 +96,7 @@
                     <li class="list-item-style">
                         <div><strong>{{offer.item.name}}</strong></div>
                         <div>Price: {{offer.item.cost}}</div>
-                        <div>Bonus: {{offer.item.stat_up}}</div>
+                        <div>Bonus: {{offer.item.stat_display}}</div>
                         <form action="{% url 'buy_item' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="offer_id" value="{{offer.id}}">
@@ -110,8 +117,9 @@
                 <div>
                     <p><strong>Уровень:</strong> {{ character.level }}</p>
                     <p><strong>Опыт:</strong> {{ character.exp }} / {{character.exp_to_new_level}}</p>
-                    <p><strong>Здоровье:</strong> {{ character.hp }} / {{ character.max_hp }}</p>
-                    <p><strong>Урон:</strong> {{ character.damage }}</p>
+                    <p><strong>Здоровье:</strong> {{ character.hp }} / {{ character.total_max_hp }} (From items: {{character.sum_hp_bonus}})</p>
+                    <p><strong>Урон:</strong> {{ character.total_click_damage }} (From items: {{character.sum_click_damage_bonus}})</p>
+                    <p><strong>DPS:</strong> {{ character.total_dps_damage }} (From items: {{character.sum_dps_bonus}})</p>
                     <p><strong>Золото:</strong> {{ character.gold }} 🪙</p>
                 </div>
             {% else %}

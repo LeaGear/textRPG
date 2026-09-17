@@ -17,7 +17,8 @@
                     <p><strong>Уровень:</strong> {{ character.level }}</p>
                     <p><strong>Опыт:</strong> {{ character.exp }}</p>
                     <p><strong>Здоровье:</strong> {{ character.hp }} / {{ character.max_hp }}</p>
-                    <p><strong>Урон:</strong> {{ character.damage }}</p>
+                    <p><strong>Урон:</strong> {{ character.total_click_damage }}</p>
+                    <p><strong>DPS:</strong> {{character.total_dps}}</p>
                     <p><strong>Золото:</strong> {{ character.gold }} 🪙</p>
                 </div>
             {% else %}

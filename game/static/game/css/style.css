@@ -44,7 +44,7 @@ body {
         "char enemy shop"
         "stats combat chat";
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 2fr 1fr;
+    grid-template-rows: 1.7fr 1fr;
     gap: 16px;
     padding: 50px 100px;
     align-content: center;

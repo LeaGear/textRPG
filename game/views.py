@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 
 
 from game.models import Character, Enemy, ShopOffer, Inventory
-from game.services import get_new_enemy, refresh_char_store_offer, buy_item_from_store, attack_action, get_user_character
+from game.services import refresh_char_store_offer, buy_item_from_store, sell_item_from_inventory, attack_action, get_user_character
 
 # Create your views here.
 def register_view(request):
@@ -53,8 +53,7 @@ def game_home(view_request):
     if view_request.user.is_authenticated:
         character = get_user_character(view_request.user)
     if character:
-        enemy_name = character.enemy_name
-        enemy = Enemy.objects.filter(name=enemy_name).first()
+        enemy = character.current_enemy
         shop_offer = list(ShopOffer.objects.filter(character=character))
         char_inventory = list(Inventory.objects.filter(character=character))
 
@@ -87,13 +86,19 @@ def buy_item_view(request):
     return redirect('game_home')
 
 @login_required
+def sell_item_view(request):
+    if request.method == 'POST':
+        inventory_slot_id = request.POST.get('inventory_record_id')
+        print("LOOOOOL", inventory_slot_id)
+        sell_item_from_inventory(inventory_slot_id)
+    return redirect('game_home')
+
+@login_required
 def attack_action_view(view_request):
     if view_request.method == 'POST':
         character = get_user_character(view_request.user)
-        if character and character.enemy_name:
-            enemy = Enemy.objects.filter(name=character.enemy_name).first()
-            if enemy:
-                attack_action(character, enemy)
+        if character and character.current_enemy:
+            attack_action(character, character.current_enemy)
     return redirect('game_home')
 
 
