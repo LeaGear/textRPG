@@ -36,23 +36,35 @@ class Character(models.Model):
     def __str__(self):
         return self.name
 
+    def set_new_enemy(self, enemy, enemy_hp):
+        self.current_enemy = enemy
+        self.enemy_hp = enemy_hp * self.level
+        self.save()
+
+    def attack_enemy(self):
+        self.enemy_hp -= self.total_click_damage
+        self.save()
+
     def add_exp(self, amount):
         self.exp += amount
         while self.exp >= self.exp_to_new_level:
             self.exp -= self.exp_to_new_level
             self.level += 1
-            self.exp_to_new_level *= 1.5
+            self.exp_to_new_level = int(self.exp_to_new_level * 1.5)
             self.max_hp += int(self.max_hp * 0.1)
             self.hp = self.total_max_hp
             self.store_refresh_cost = self.level * 10
+        self.save()
 
     def add_gold(self, amount):
         self.gold += amount
+        self.save()
 
     def spend_gold(self, amount):
         if amount > self.gold:
             raise ValueError("Not enough gold")
         self.gold -= amount
+        self.save()
 
     @property
     def sum_hp_bonus(self):

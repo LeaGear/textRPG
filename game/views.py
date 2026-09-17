@@ -3,7 +3,6 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 
@@ -16,10 +15,12 @@ def register_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-
+            first_enemy = Enemy.objects.first()#????????????????????????????/
             Character.objects.create(
                 user=user,
-                name=user.username
+                name=user.username,
+                current_enemy = first_enemy,
+                enemy_hp = first_enemy.hp if first_enemy else 0
             )
             return redirect('game_home')
     else:
@@ -54,13 +55,11 @@ def game_home(view_request):
         character = get_user_character(view_request.user)
     if character:
         enemy = character.current_enemy
-        shop_offer = list(ShopOffer.objects.filter(character=character))
-        char_inventory = list(Inventory.objects.filter(character=character))
+        shop_offer = list(ShopOffer.objects.filter(character=character).select_related('item'))
+        char_inventory = list(Inventory.objects.filter(character=character).select_related('item'))
 
     else:
         enemy = Enemy.objects.first()
-
-
 
     context = {
         'character' : character,
@@ -81,16 +80,19 @@ def refresh_store(request):
 @login_required
 def buy_item_view(request):
     if request.method == 'POST':
+        character = get_user_character(request.user)
         offer_id = request.POST.get('offer_id')
-        buy_item_from_store(offer_id)
+        if character and offer_id:
+            buy_item_from_store(offer_id, character)
     return redirect('game_home')
 
 @login_required
 def sell_item_view(request):
     if request.method == 'POST':
+        character = get_user_character(request.user)
         inventory_slot_id = request.POST.get('inventory_record_id')
-        print("LOOOOOL", inventory_slot_id)
-        sell_item_from_inventory(inventory_slot_id)
+        if character and inventory_slot_id:
+            sell_item_from_inventory(inventory_slot_id, character)
     return redirect('game_home')
 
 @login_required
@@ -98,6 +100,7 @@ def attack_action_view(view_request):
     if view_request.method == 'POST':
         character = get_user_character(view_request.user)
         if character and character.current_enemy:
+            print("go to service")
             attack_action(character, character.current_enemy)
     return redirect('game_home')
 
