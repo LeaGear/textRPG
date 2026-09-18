@@ -1,8 +1,8 @@
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+html, body {
+    height: 100vh;
+    overflow: hidden;
     margin: 0;
+    padding: 0;
 }
 .page-head {
     display: flex;
@@ -28,7 +28,7 @@ body {
     list-style: None;
     padding: 0;
     overflow-y:auto;
-    height: 300px;
+    height: 200px;
 }
 .list-item-style {
     margin-bottom: 10px;
@@ -44,9 +44,10 @@ body {
         "char enemy shop"
         "stats combat chat";
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 1.7fr 1fr;
+    grid-template-rows: 350px 240px;
     gap: 16px;
     padding: 50px 100px;
+    height: cacl(100vh - 60px)
     align-content: center;
 }
 

@@ -6,6 +6,11 @@ from django.db.models import Sum
 from django.utils.timezone import now
 
 # Create your models here.
+class LogCategory(models.TextChoices):
+    COMBAT = 'combat', 'Бой'
+    ECONOMY = 'economy', 'Экономика'
+    SYSTEM = 'system', 'Система'
+    STATS = 'stats', 'Характеристики'
 
 class Enemy(models.Model):
     name = models.CharField(max_length=100, verbose_name='Enemy Name')
@@ -141,3 +146,20 @@ class ShopOffer(models.Model):
 
     def __str__(self):
         return f'{self.character.name} see in store  -> {self.item}'
+
+class GameLog(models.Model):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, verbose_name='Game Log Person')
+    text = models.CharField(verbose_name='Game Log Text')
+    category = models.CharField(
+        max_length=20,
+        choices=LogCategory.choices,
+        default=LogCategory.COMBAT,
+        verbose_name='Game Log Category'
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Game Log Created')
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.character.name} logged {self.text[:30]} at {self.created_at}'

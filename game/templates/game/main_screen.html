@@ -137,9 +137,13 @@
             </div>
         </section>
         <section class="chat-panel">
-            <div>
-                CHAT
-            </div>
+            {% if logs %}
+                <ul class="list-style">
+                    {% for log in logs %}
+                    <li style="text-align:justify;"><i>[{{log.created_at}}]</i> {{log.text}}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </section>
     </div>
 </body>

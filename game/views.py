@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 
 
 from game.models import Character, Enemy, ShopOffer, Inventory
-from game.services import refresh_char_store_offer, buy_item_from_store, sell_item_from_inventory, attack_action, \
+from game.services import refresh_char_store_offer, get_last_logs, buy_item_from_store, sell_item_from_inventory, attack_action, \
     get_user_character, apply_dps_damage
 
 
@@ -52,6 +52,7 @@ def game_home(view_request):
     character = None
     shop_offer = []
     char_inventory = []
+    logs = []
 
     if view_request.user.is_authenticated:
         character = get_user_character(view_request.user)
@@ -60,7 +61,7 @@ def game_home(view_request):
         enemy = character.current_enemy
         shop_offer = list(ShopOffer.objects.filter(character=character).select_related('item'))
         char_inventory = list(Inventory.objects.filter(character=character).select_related('item'))
-
+        logs = get_last_logs(character)
     else:
         enemy = Enemy.objects.first()
 
@@ -68,7 +69,8 @@ def game_home(view_request):
         'character' : character,
         'enemy': enemy,
         'offers': shop_offer,
-        'inventory': char_inventory
+        'inventory': char_inventory,
+        'logs': logs
     }
     return render(view_request, 'game/main_screen.html', context)
 
