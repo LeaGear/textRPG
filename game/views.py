@@ -7,7 +7,9 @@ from django.shortcuts import render, redirect
 
 
 from game.models import Character, Enemy, ShopOffer, Inventory
-from game.services import refresh_char_store_offer, buy_item_from_store, sell_item_from_inventory, attack_action, get_user_character
+from game.services import refresh_char_store_offer, buy_item_from_store, sell_item_from_inventory, attack_action, \
+    get_user_character, apply_dps_damage
+
 
 # Create your views here.
 def register_view(request):
@@ -54,6 +56,7 @@ def game_home(view_request):
     if view_request.user.is_authenticated:
         character = get_user_character(view_request.user)
     if character:
+        apply_dps_damage(character)
         enemy = character.current_enemy
         shop_offer = list(ShopOffer.objects.filter(character=character).select_related('item'))
         char_inventory = list(Inventory.objects.filter(character=character).select_related('item'))
@@ -100,8 +103,8 @@ def attack_action_view(view_request):
     if view_request.method == 'POST':
         character = get_user_character(view_request.user)
         if character and character.current_enemy:
-            print("go to service")
-            attack_action(character, character.current_enemy)
+            attack_action(character)
     return redirect('game_home')
+
 
 

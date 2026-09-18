@@ -1,6 +1,9 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.utils.timezone import now
 
 # Create your models here.
 
@@ -29,6 +32,7 @@ class Character(models.Model):
     base_dps_damage = models.FloatField(default=0.0, verbose_name='Character DPS Damage')
     gold = models.PositiveIntegerField(default=0, verbose_name='Character Gold')
     store_refresh_cost = models.IntegerField(default=10, verbose_name='Character Store Refresh Cost')
+    last_dps_tick_time = models.DateTimeField(default=now, verbose_name='Character Last DPS Tick Time')
 
     current_enemy = models.ForeignKey(Enemy, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Name of Current Enemy')
     enemy_hp = models.IntegerField(default=5, verbose_name='Current Enemy HP')
@@ -41,8 +45,8 @@ class Character(models.Model):
         self.enemy_hp = enemy_hp * self.level
         self.save()
 
-    def attack_enemy(self):
-        self.enemy_hp -= self.total_click_damage
+    def attack_enemy(self, damage):
+        self.enemy_hp -= damage
         self.save()
 
     def add_exp(self, amount):
@@ -64,6 +68,10 @@ class Character(models.Model):
         if amount > self.gold:
             raise ValueError("Not enough gold")
         self.gold -= amount
+        self.save()
+
+    def change_last_dps_tick_time(self):
+        self.last_dps_tick_time = now()
         self.save()
 
     @property
