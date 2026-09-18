@@ -47,7 +47,7 @@ def refresh_char_store_offer(character):
             count = min(len(items), 5)
             selected_items = random.sample(items, count)
             ShopOffer.objects.bulk_create([
-                ShopOffer.objects.create(character=character, item=item) for item in selected_items
+                ShopOffer(character=character, item=item) for item in selected_items
             ])
         character.spend_gold(character.store_refresh_cost)
     else:
